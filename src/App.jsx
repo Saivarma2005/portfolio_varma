@@ -15,29 +15,74 @@ const skills = [
   'ML',
 ]
 
+const focusAreas = ['Open to internships', 'Data Analytics', 'AI/ML', 'Full Stack']
+
+const profileMetrics = [
+  { value: '9.55', label: 'CGPA' },
+  { value: '2', label: 'Internships' },
+  { value: '10+', label: 'Certifications' },
+  { value: '4', label: 'Projects' },
+]
+
 const projects = [
   {
     title: 'Smart Library Management System',
     description:
       'A full-stack library application designed to simplify book issuance, member records, inventory tracking, and administrative workflows with a clean dashboard experience.',
+    overview:
+      'This system streamlines library operations by tracking books, users, returns, and late fine management in one centralized dashboard. It helps administrators manage resources more efficiently while giving students a simple way to borrow and return books.',
+    highlights: [
+      'Automated book issue and return tracking',
+      'Member and inventory management dashboard',
+      'Role-based admin workflows and reporting',
+    ],
+    image:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
     tags: ['Java', 'Spring Boot', 'MySQL'],
   },
   {
     title: 'Student Placement Management Portal',
     description:
       'A placement-focused platform for managing student profiles, company drives, placement data, and student progress in a streamlined system.',
+    overview:
+      'This portal connects students, placement coordinators, and recruiters through a shared system that centralizes CVs, skill data, placement rounds, and company notifications. It makes the entire recruitment process more transparent and organized.',
+    highlights: [
+      'Student profile and resume tracking',
+      'Company drive and interview coordination',
+      'Placement analytics and status monitoring',
+    ],
+    image:
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
     tags: ['React', 'Node.js', 'SQL'],
   },
   {
     title: 'Cloud-Based Expense Tracker',
     description:
       'A personal finance application for recording expenses, category analysis, and cloud-friendly data storage with an intuitive user interface.',
+    overview:
+      'The platform helps users monitor daily spending, categorize expenses, and identify financial patterns through clean reporting. It focuses on delivering a simple but insightful experience for budgeting and tracking personal cash flow.',
+    highlights: [
+      'Smart expense categorization and summaries',
+      'Monthly budget trend analysis',
+      'Cloud-ready, scalable financial dashboard',
+    ],
+    image:
+      'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=80',
     tags: ['AWS', 'JavaScript', 'React'],
   },
   {
     title: 'Personal Portfolio Website',
     description:
       'A modern portfolio website showcasing skills, certifications, projects, internship experience, and contact details for professional branding.',
+    overview:
+      'This portfolio was designed to present my technical profile in a polished and professional way. It combines personal branding, project storytelling, experience highlights, and contact channels into a streamlined digital presence.',
+    highlights: [
+      'Professional personal branding layout',
+      'Responsive design across devices',
+      'Showcase of skills, certifications, and work',
+    ],
+    image:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
     tags: ['React', 'CSS', 'Vite'],
   },
 ]
@@ -86,8 +131,8 @@ const certifications = [
     name: 'GitHub Foundations',
     issuer: 'GitHub',
     date: 'Completed',
-    link: '#',
-    status: 'Certificate PDF uploaded',
+    link: 'https://learn.microsoft.com/api/credentials/share/en-us/DALAPATIRAODATTAVENKATASAIVARMA-7694/E91B5EFF8EAFB3A3?sharingId=6655FA82E90B3A55',
+    status: 'Verified',
   },
   {
     name: 'Data Structures & Algorithms',
@@ -162,8 +207,13 @@ function App() {
         <section className="hero section">
           <div className="hero-text">
             <p className="eyebrow">Computer Science Engineering Student</p>
-            <h1>Dalapathi Sai Varma</h1>
+            <h1>DALAPATI RAO DATTA VENKATA SAI VARMA</h1>
             <h2>Data Analytics | AI/ML | Full-Stack Development</h2>
+            <div className="focus-badges">
+              {focusAreas.map((item) => (
+                <span key={item} className="focus-badge">{item}</span>
+              ))}
+            </div>
             <p>
               I am a CSE student with a strong interest in data-driven decision-making,
               machine learning, and modern web development. I enjoy solving real-world
@@ -198,10 +248,22 @@ function App() {
 
           <div className="hero-visual">
             <div className="profile-card">
-              <div className="avatar">DS</div>
+              <img
+                src="/profile_img.png"
+                alt="Dalapathi Sai Varma"
+                className="avatar-image"
+              />
               <div className="profile-info">
-                <strong>Dalapathi Sai Varma</strong>
+                <strong>DALAPATI RAO DATTA VENKATA SAI VARMA</strong>
                 <span>B.Tech CSE, KL University</span>
+              </div>
+              <div className="mini-stats">
+                {profileMetrics.map((metric) => (
+                  <div key={metric.label} className="mini-stat">
+                    <strong>{metric.value}</strong>
+                    <span>{metric.label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -235,6 +297,27 @@ function App() {
           </div>
         </section>
 
+        <section className="section">
+          <div className="section-heading">
+            <p className="eyebrow">Why me</p>
+            <h3>Professional value I bring</h3>
+          </div>
+          <div className="value-grid">
+            <div className="value-card">
+              <h4>Problem Solving</h4>
+              <p>I combine logic, creativity, and structured thinking to build practical solutions for real business and academic challenges.</p>
+            </div>
+            <div className="value-card">
+              <h4>Data Mindset</h4>
+              <p>I enjoy turning raw information into meaningful insight, using analytics to support smarter decisions and better outcomes.</p>
+            </div>
+            <div className="value-card">
+              <h4>Product Thinking</h4>
+              <p>I focus on user experience, clean design, and scalable implementation to create software that is useful and engaging.</p>
+            </div>
+          </div>
+        </section>
+
         <section id="skills" className="section">
           <div className="section-heading">
             <p className="eyebrow">Skills</p>
@@ -255,12 +338,21 @@ function App() {
           <div className="projects-grid">
             {projects.map((project) => (
               <article key={project.title} className="project-card">
-                <h4>{project.title}</h4>
-                <p>{project.description}</p>
-                <div className="tag-row">
-                  {project.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
+                <img src={project.image} alt={project.title} className="project-image" />
+                <div className="project-content">
+                  <h4>{project.title}</h4>
+                  <p>{project.description}</p>
+                  <p className="project-overview">{project.overview}</p>
+                  <ul className="project-highlights">
+                    {project.highlights.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <div className="tag-row">
+                    {project.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
                 </div>
               </article>
             ))}
@@ -353,7 +445,10 @@ function App() {
           </div>
           <div className="contact-grid">
             <div className="contact-card">
-              <p>Email: saivarma.dalapathi@gmail.com</p>
+              <p>
+                Email:{' '}
+                <a href="mailto:dalapathisaivarma@gmail.com">dalapathisaivarma@gmail.com</a>
+              </p>
               <p>
                 LinkedIn:{' '}
                 <a
@@ -371,10 +466,16 @@ function App() {
                 </a>
               </p>
             </div>
-            <form className="contact-form">
-              <input type="text" placeholder="Your Name" />
-              <input type="email" placeholder="Your Email" />
-              <textarea rows="4" placeholder="Your message" />
+            <form
+              className="contact-form"
+              action="https://formsubmit.co/dalapathisaivarma@gmail.com"
+              method="POST"
+            >
+              <input type="hidden" name="_subject" value="New Portfolio Contact Message" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="text" name="name" placeholder="Your Name" required />
+              <input type="email" name="email" placeholder="Your Email" required />
+              <textarea name="message" rows="4" placeholder="Your message" required />
               <button type="submit">Send Message</button>
             </form>
           </div>
