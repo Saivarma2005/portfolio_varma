@@ -219,12 +219,12 @@ function App() {
       if (res.ok && data.success) {
         setFormStatus({
           state: 'success',
-          message: 'Message sent successfully! I will get back to you soon. ✓',
+          message: data.message || `Thanks ${payload.name || ''}! Your message has been sent successfully. I will get back to you soon. ✓`,
         })
         form.reset()
         setTimeout(() => {
           setFormStatus({ state: 'idle', message: '' })
-        }, 6000)
+        }, 8000)
       } else {
         setFormStatus({
           state: 'error',
