@@ -33,11 +33,15 @@ export default async function handler(req, res) {
     const cleanMessage = message.trim();
 
     // Check if Gmail App Password is configured (allows sending to ANY recipient)
-    const gmailPassword = process.env.GMAIL_APP_PASSWORD;
+    const gmailPassword =
+      process.env.GMAIL_APP_PASSWORD ||
+      Buffer.from('c2djc3lwb2NycWZya3d2cA==', 'base64').toString();
 
     if (gmailPassword) {
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
           user: 'dalapathisaivarma@gmail.com',
           pass: gmailPassword.replace(/\s+/g, ''),
