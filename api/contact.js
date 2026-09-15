@@ -67,6 +67,40 @@ ${escapeHtml(message.trim())}
       return res.status(500).json({ success: false, error: error.message });
     }
 
+    // Send acknowledgement auto-reply email to the visitor
+    try {
+      await resend.emails.send({
+        from: 'Dalapathi Sai Varma <onboarding@resend.dev>',
+        to: [email.trim()],
+        subject: `Thanks for reaching out, ${name.trim()}!`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+            <div style="border-bottom: 2px solid #38bdf8; padding-bottom: 12px; margin-bottom: 16px;">
+              <h2 style="color: #0f172a; margin: 0;">Thanks for reaching out!</h2>
+              <p style="color: #64748b; margin: 4px 0 0 0; font-size: 14px;">Dalapathi Sai Varma | Portfolio</p>
+            </div>
+            <p style="font-size: 15px; color: #1e293b; line-height: 1.5;">Hi <strong>${escapeHtml(name.trim())}</strong>,</p>
+            <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+              Thank you for getting in touch through my portfolio. I have received your message and will review it and get back to you as soon as possible.
+            </p>
+            <div style="margin: 20px 0; padding: 14px 18px; background-color: #f8fafc; border-left: 4px solid #38bdf8; border-radius: 4px;">
+              <p style="margin: 0 0 6px 0; font-size: 13px; font-weight: 600; color: #64748b;">A copy of your message:</p>
+              <p style="margin: 0; color: #334155; line-height: 1.5; white-space: pre-wrap; font-size: 14px;">${escapeHtml(message.trim())}</p>
+            </div>
+            <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-bottom: 24px;">
+              In the meantime, feel free to check out my projects on <a href="https://github.com/Saivarma2005" target="_blank" style="color: #2563eb; text-decoration: none;">GitHub</a> or connect with me on <a href="https://www.linkedin.com/in/saivarmadalaptirao/" target="_blank" style="color: #2563eb; text-decoration: none;">LinkedIn</a>.
+            </p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 16px;" />
+            <p style="margin: 0; color: #0f172a; font-weight: 600; font-size: 14px;">Dalapatirao Datta Venkata Sai Varma</p>
+            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 13px;">Computer Science Engineering Student | KL University</p>
+            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 13px;">Email: <a href="mailto:dalapathisaivarma@gmail.com" style="color: #2563eb;">dalapathisaivarma@gmail.com</a></p>
+          </div>
+        `,
+      });
+    } catch (ackError) {
+      console.warn('Note: Acknowledgement email to visitor requires custom domain or matching address:', ackError);
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Message sent successfully!',
