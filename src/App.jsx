@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import emailjs from '@emailjs/browser'
 import './App.css'
 
 const skills = [
@@ -205,37 +206,72 @@ function App() {
       botcheck: formData.get('botcheck'),
     }
 
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+    if (payload.botcheck) {
+      setFormStatus({
+        state: 'success',
+        message: 'Message sent successfully! ✓',
       })
+      form.reset()
+      return
+    }
 
-      const data = await res.json()
+    try {
+      // Send directly via EmailJS connected to your Gmail service
+      await emailjs.send(
+        'service_8a4l09k',
+        'template_p5kfog8',
+        {
+          name: payload.name,
+          email: payload.email,
+          message: payload.message,
+          reply_to: payload.email,
+        },
+        'vjjuHFJl6-xwAC8eh'
+      )
 
-      if (res.ok && data.success) {
-        setFormStatus({
-          state: 'success',
-          message: data.message || `Thanks ${payload.name || ''}! Your message has been sent successfully. I will get back to you soon. ✓`,
-        })
-        form.reset()
-        setTimeout(() => {
-          setFormStatus({ state: 'idle', message: '' })
-        }, 8000)
-      } else {
-        setFormStatus({
-          state: 'error',
-          message: data.error || 'Failed to send message. Please try again or email me directly.',
-        })
-      }
+      // Also notify backend /api/contact as backup
+      fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch((err) => console.warn('Backend ping:', err))
+
+      setFormStatus({
+        state: 'success',
+        message: `Thanks ${payload.name || ''}! Your message has been sent successfully. ✓`,
+      })
+      form.reset()
+      setTimeout(() => {
+        setFormStatus({ state: 'idle', message: '' })
+      }, 8000)
     } catch (err) {
       console.error('Contact form submission error:', err)
+      // Fallback to /api/contact
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        const data = await res.json()
+        if (res.ok && data.success) {
+          setFormStatus({
+            state: 'success',
+            message: `Thanks ${payload.name || ''}! Your message has been sent successfully. ✓`,
+          })
+          form.reset()
+          setTimeout(() => {
+            setFormStatus({ state: 'idle', message: '' })
+          }, 8000)
+          return
+        }
+      } catch (fallbackErr) {
+        console.error('Fallback error:', fallbackErr)
+      }
+
       setFormStatus({
         state: 'error',
-        message: 'Network error. Please try again or email me directly at dalapathisaivarma@gmail.com.',
+        message: 'Failed to send message. Please try again or email me directly at dalapathisaivarma@gmail.com.',
       })
     }
   }
