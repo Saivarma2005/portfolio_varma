@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 
 const skills = [
@@ -189,6 +190,56 @@ const stats = [
 ]
 
 function App() {
+  const [formStatus, setFormStatus] = useState({ state: 'idle', message: '' })
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault()
+    setFormStatus({ state: 'loading', message: 'Sending message...' })
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    const payload = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      botcheck: formData.get('botcheck'),
+    }
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        setFormStatus({
+          state: 'success',
+          message: 'Message sent successfully! I will get back to you soon. ✓',
+        })
+        form.reset()
+        setTimeout(() => {
+          setFormStatus({ state: 'idle', message: '' })
+        }, 6000)
+      } else {
+        setFormStatus({
+          state: 'error',
+          message: data.error || 'Failed to send message. Please try again or email me directly.',
+        })
+      }
+    } catch (err) {
+      console.error('Contact form submission error:', err)
+      setFormStatus({
+        state: 'error',
+        message: 'Network error. Please try again or email me directly at dalapathisaivarma@gmail.com.',
+      })
+    }
+  }
+
   return (
     <div className="portfolio-shell">
       <header className="topbar">
@@ -466,17 +517,50 @@ function App() {
                 </a>
               </p>
             </div>
-            <form
-              className="contact-form"
-              action="https://formsubmit.co/dalapathisaivarma@gmail.com"
-              method="POST"
-            >
-              <input type="hidden" name="_subject" value="New Portfolio Contact Message" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="text" name="name" placeholder="Your Name" required />
-              <input type="email" name="email" placeholder="Your Email" required />
-              <textarea name="message" rows="4" placeholder="Your message" required />
-              <button type="submit">Send Message</button>
+            <form className="contact-form" onSubmit={handleContactSubmit}>
+              {/* Invisible honeypot spam trap */}
+              <input
+                type="text"
+                name="botcheck"
+                tabIndex="-1"
+                autoComplete="off"
+                style={{ display: 'none' }}
+                aria-hidden="true"
+              />
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                required
+                disabled={formStatus.state === 'loading'}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                required
+                disabled={formStatus.state === 'loading'}
+              />
+              <textarea
+                name="message"
+                rows="4"
+                placeholder="Your message"
+                required
+                disabled={formStatus.state === 'loading'}
+              />
+              <button
+                type="submit"
+                disabled={formStatus.state === 'loading'}
+                className={formStatus.state === 'loading' ? 'btn-loading' : ''}
+              >
+                {formStatus.state === 'loading' ? 'Sending...' : 'Send Message'}
+              </button>
+
+              {formStatus.message && (
+                <div className={`form-status-alert ${formStatus.state}`}>
+                  {formStatus.message}
+                </div>
+              )}
             </form>
           </div>
         </section>
